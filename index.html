@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .main-container{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            overflow: hidden;
+            gap: 10px;
+        }
+        .card {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            perspective: 1000px;
+            box-shadow: 0 0 0 5px #ffffff80;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            .card img {
+            width: 48px;
+            fill: #333;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+            }
+
+            .card__content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #f2f2f2;
+            transform: rotateX(-90deg);
+            transform-origin: bottom;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            .card:hover .card__content {
+            transform: rotateX(0deg);
+            }
+
+            .card__title {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+            }
+
+            .card:hover svg {
+            scale: 0;
+            }
+
+            .card__description {
+            margin: 10px 0 0;
+            font-size: 14px;
+            color: #777;
+            line-height: 1.4;
+            }
+
+    </style>
+</head>
+<body> 
+    <h1>Cat Facts</h1>
+    <div class="main-container">
+                <div class="card">
+                <img id="catpic" style="height: 200px;width: 300px;">
+                    <div class="card__content">
+                    <p class="card__title">Cat fact</p>
+                    <p class="card__description" id="fact-container"></p>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <img id="catpic2" style="height: 200px;width: 300px;">
+                    <div class="card__content">
+                    <p class="card__title">Cat fact</p>
+                    <p class="card__description" id="fact-container2"></p>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <img id="catpic3" style="height: 200px;width: 300px;">
+                    <div class="card__content">
+                    <p class="card__title">Cat fact</p>
+                    <p class="card__description" id="fact-container3"></p>
+                    </div>
+                </div>
+    </div>
+    <p><i>hover over the pictures</i></p>
+
+</body>
+
+    <script>
+        async function getMeowFacts(){
+            const url = "https://meowfacts.herokuapp.com/?count=3";
+
+            try {
+                const response = await fetch(url);
+                if(!response.ok){
+                        throw new Error(response.statusText);     
+                }
+                        const data = await response.json();
+                        console.log(data);
+                        return data;
+            } catch (error) {
+                console.log(error);
+                return null;
+            }
+        }
+
+        async function getMeowPics(){
+            const url = "https://api.thecatapi.com/v1/images/search?limit=3";
+            
+
+            try {
+                const response = await fetch(url);
+                if(!response.ok){
+                    throw new Error(response.statusText);
+                }
+                const data = await response.json();
+                console.log(data);
+                return data;
+            } catch (error) {
+                console.log(error);
+                return null;
+            }
+        }
+
+        async function displayMeowFacts(){
+            const data = await getMeowFacts();
+
+            let fact1 = `<p>${data.data[0]}</p>`;
+            let fact2 = `<p>${data.data[1]}</p>`;
+            let fact3 = `<p>${data.data[2]}</p>`;
+
+            document.getElementById('fact-container').innerHTML = fact1;
+            document.getElementById('fact-container2').innerHTML = fact2;
+            document.getElementById('fact-container3').innerHTML = fact3;
+        }
+
+        async function displayMeowPics(){
+            const data = await getMeowPics();
+            const picture = document.getElementById("catpic");
+            const picture2 = document.getElementById("catpic2");
+            const picture3 = document.getElementById("catpic3");
+            picture.src = `${data[0].url}`;
+            picture2.src = `${data[1].url}`;
+            picture3.src = `${data[2].url}`;
+        }
+
+       
+
+        displayMeowFacts();
+        displayMeowPics();
+    </script>
+</html>
